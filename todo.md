@@ -1,0 +1,4 @@
+- [ ] seo optimization
+- [ ] hero section text dynamic
+- [ ] admin details store
+- [ ] caching of fetch request when navigating

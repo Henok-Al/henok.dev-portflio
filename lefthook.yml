@@ -1,0 +1,10 @@
+post-merge:
+  commands:
+    update:
+      run: npm install
+
+pre-commit:
+  parallel: true
+  commands:
+    linter:
+      run: npm run lint

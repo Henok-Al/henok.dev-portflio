@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes scaling {
+    0% {
+        filter: grayscale(1);
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+        filter: grayscale(1);
+        box-shadow: 3px 3px 10px black;
+    }
+
+    100% {
+        transform: scale(1);
+        filter: grayscale(0);
+    }
+}
+
+@keyframes dot {
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes cube {
+    0% {
+        transform: translateY(0px) rotateY(0deg);
+    }
+
+    50% {
+        transform: translateY(-12px) rotateY(180deg);
+    }
+
+    100% {
+        transform: translateY(0px) rotateX(360deg);
+    }
+}
+
+@keyframes circle {
+    0% {
+        left: 0;
+        bottom: 0;
+    }
+
+    50% {
+        left: 5%;
+        bottom: 10%;
+    }
+
+    100% {
+        left: 0;
+        bottom: 0;
+    }
+}
+
+@keyframes zigzag {
+    50% {
+        left: 5%;
+        top: 2%;
+    }
+}
+
+@keyframes plus {
+    50% {
+        top: 3%;
+        left: 48%;
+    }
+}
+
+@keyframes blob {
+    50% {
+        top: 54%;
+        left: 56%;
+    }
+}
+
+.bn39 {
+    background-image: linear-gradient(135deg, #008aff, #86d472);
+    border-radius: 6px;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: block;
+    height: 50px;
+    font-size: 1.4em;
+    font-weight: 600;
+    padding: 4px;
+    position: relative;
+    text-decoration: none;
+    width: 7em;
+    z-index: 2;
+}
+
+.bn39:hover {
+    color: #fff;
+}
+
+.bn39 .bn39span {
+    align-items: center;
+    background: #0e0e10;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    transition: background 0.5s ease;
+    width: 100%;
+}
+
+.bn39:hover .bn39span {
+    background: transparent;
+}
+
+.bn62 {
+    color: #1cc49d;
+    background-color: #1b2f31;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 7em;
+    font-size: large;
+    font-weight: 600;
+}
+
+.bg {
+    background-image: url('./assets/styles/mesh-963.png');
+}
+
+/* Dark mode styles for vertical timeline */
+.dark .vertical-timeline-element-content {
+    background: #374151 !important;
+    color: #f3f4f6 !important;
+    box-shadow: 0 3px 0 #ff6b35 !important;
+}
+
+.dark .vertical-timeline-element-content-arrow {
+    border-right: 7px solid #374151 !important;
+}
+
+.dark .vertical-timeline-element-date {
+    color: #d1d5db !important;
+}
+
+/* Dark mode styles for admin forms */
+.dark label {
+    color: #f3f4f6 !important;
+}
+
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="url"],
+.dark input[type="tel"],
+.dark input[type="number"],
+.dark input[type="date"],
+.dark input[type="password"],
+.dark textarea,
+.dark select {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #f3f4f6 !important;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="url"]:focus,
+.dark input[type="tel"]:focus,
+.dark input[type="number"]:focus,
+.dark input[type="date"]:focus,
+.dark input[type="password"]:focus,
+.dark textarea:focus,
+.dark select:focus {
+    border-color: #ff6b35 !important;
+    ring-color: #ff6b35 !important;
+}
+
+/* Dark mode styles for admin tables */
+.dark td {
+    color: #f3f4f6 !important;
+}
+
+.dark th {
+    color: #d1d5db !important;
+}
+
+/* Dark mode styles for admin content */
+.dark p,
+.dark span,
+.dark div {
+    color: #e5e7eb;
+}
+
+/* Preloader animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.5;
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Custom bounce delays for loading dots */
+.animate-bounce-delay-1 {
+  animation: bounce 1s infinite 0.1s;
+}
+
+.animate-bounce-delay-2 {
+  animation: bounce 1s infinite 0.2s;
+}
