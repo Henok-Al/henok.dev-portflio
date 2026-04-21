@@ -174,7 +174,7 @@ const ProjectDetail = () => {
           project.description ||
           `Explore ${project.title}, a project showcasing modern web development skills.`
         }
-        ogTitle={`${project.title} - Krishna Jain Portfolio`}
+        ogTitle={`${project.title} - Henok Alemu Portfolio`}
         ogDescription={
           project.description ||
           project.shortDescription ||

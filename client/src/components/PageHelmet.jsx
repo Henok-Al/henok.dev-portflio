@@ -14,12 +14,12 @@ const PageHelmet = ({
   const { aboutInfo } = useAbout()
 
   // Default fallback values
-  const defaultTitle = "Krishna Jain | Full Stack Developer"
+  const defaultTitle = "Henok Alemu | Full Stack Developer"
   const defaultDescription =
-    "Portfolio of Krishna Jain, a full stack developer specializing in modern web applications."
+    "Portfolio of Henok Alemu, a full stack developer specializing in modern web applications."
   const defaultOgImage =
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
-  const defaultUrl = "https://krishnajain.site/"
+  const defaultUrl = "https://henokalemu.com/"
 
   // Use provided values or construct from aboutInfo or use defaults
   const pageTitle =
@@ -39,7 +39,7 @@ const PageHelmet = ({
   const pageOgImage = ogImage || aboutInfo?.profileImage || defaultOgImage
 
   const pageKeywords = [
-    aboutInfo?.name || "Krishna Jain",
+    aboutInfo?.name || "Henok Alemu",
     aboutInfo?.title || "Full Stack Developer",
     "portfolio",
     "web developer",
@@ -58,7 +58,7 @@ const PageHelmet = ({
       <meta property="og:image" content={pageOgImage} />
 
       {/* Additional meta tags for better SEO */}
-      <meta name="author" content={aboutInfo?.name || "Krishna Jain"} />
+      <meta name="author" content={aboutInfo?.name || "Henok Alemu"} />
       <meta name="keywords" content={pageKeywords} />
 
       {/* Twitter Card meta tags */}

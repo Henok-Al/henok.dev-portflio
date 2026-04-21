@@ -21,8 +21,8 @@ const Preloader = ({
         {/* Logo/Brand */}
         <div className="mb-4">
           <h1 className="text-4xl font-bold text-gray-800 lg:text-6xl dark:text-white">
-            <span className="text-[#ff4500] dark:text-[#ff6b35]">K</span>rishna
-            Jain
+            <span className="text-[#ff4500] dark:text-[#ff6b35]">H</span>enok
+            Alemu
           </h1>
           <p className="mt-2 text-center text-lg text-gray-600 dark:text-gray-300">
             Full Stack Developer

@@ -5,7 +5,7 @@ const aboutSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      default: "Krishna Jain",
+      default: "Henok Alemu",
     },
     title: {
       type: String,

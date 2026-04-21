@@ -28,7 +28,7 @@ const Navbar = ({ isDark, setIsDark }) => {
         <Link to="/">
           <img src={kLogo} alt="K" className="w-24" />
           <span className="absolute left-16 top-7 w-full text-[28px] transition-colors duration-300 dark:text-white">
-            rishna Jain
+            Henok Alemu
           </span>
         </Link>
       </div>

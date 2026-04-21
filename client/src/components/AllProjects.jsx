@@ -65,9 +65,9 @@ const AllProjects = () => {
   return (
     <>
       <PageHelmet
-        title="All Projects - Krishna Jain Portfolio"
-        description="Explore all projects by Krishna Jain, showcasing full-stack development skills and modern web technologies."
-        ogTitle="All Projects - Krishna Jain"
+        title="All Projects - Henok Alemu Portfolio"
+        description="Explore all projects by Henok Alemu, showcasing full-stack development skills and modern web technologies."
+        ogTitle="All Projects - Henok Alemu"
         ogDescription="Browse through the complete portfolio of projects featuring React, Node.js, and modern web development."
         keywords={[
           "projects",

@@ -21,9 +21,9 @@ const createAdmin = async () => {
     // Create default admin
     const admin = new Admin({
       username: process.env.ADMIN_USERNAME || "admin",
-      email: "krishnajain5050@gmail.com",
+      email: "henok.gebresenbet@gmail.com",
       password: process.env.ADMIN_PASSWORD || "admin123",
-      githubUsername: "krishna4040", // Replace with your GitHub username
+      githubUsername: "henokgebresenbet", // Replace with your GitHub username
     })
 
     await admin.save()

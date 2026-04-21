@@ -94,7 +94,7 @@ const Footer = () => {
           </span>
         </div>
         <span className="absolute bottom-0 left-0 -z-10 select-none text-7xl text-[#535c87] transition-colors duration-300 dark:text-gray-600">
-          Krishna Jain
+          Henok Alemu
         </span>
       </div>
     </footer>
