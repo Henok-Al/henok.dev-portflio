@@ -190,3 +190,4 @@ This application uses **Cloudinary** for media management, providing:
 - **Path Duplication Fix**: Resolved duplicate folder paths in Cloudinary URLs. See [CLOUDINARY_PATH_FIX.md](./CLOUDINARY_PATH_FIX.md) for details.
 - **Media Gallery Enhancement**: Fixed video display and navigation in project galleries. See [MEDIA_GALLERY_FIX.md](./MEDIA_GALLERY_FIX.md) for details.
 
+# henok.dev-portflio
