@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
 import Admin from "../server/models/admin.js"
+import bcrypt from "bcryptjs"
 import dotenv from "dotenv"
 
-dotenv.config({ path: "env.production" })
+dotenv.config({ path: process.cwd() + "/.env" })
 
 const createAdmin = async () => {
   try {
@@ -11,30 +12,41 @@ const createAdmin = async () => {
       useUnifiedTopology: true,
     })
 
-    // Check if admin already exists
-    const existingAdmin = await Admin.findOne({})
-    if (existingAdmin) {
-      console.log("Admin already exists")
-      process.exit(0)
+    const adminData = {
+      username: process.env.ADMIN_USERNAME || "admin",
+      email: process.env.ADMIN_EMAIL || "henok.dev@admin.com",
+      password: process.env.ADMIN_PASSWORD || "Hen!y@2119",
+      githubUsername: process.env.ADMIN_GITHUB_USERNAME || "henokgebresenbet",
     }
 
-    // Create default admin
-    const admin = new Admin({
-      username: process.env.ADMIN_USERNAME || "admin",
-      email: "henok.gebresenbet@gmail.com",
-      password: process.env.ADMIN_PASSWORD || "admin123",
-      githubUsername: "henokgebresenbet", // Replace with your GitHub username
-    })
+    // Check if admin exists
+    let admin = await Admin.findOne({})
 
-    await admin.save()
-    console.log("Admin created successfully!")
-    console.log("Username: admin")
-    console.log("Password: admin123")
-    console.log("Please change these credentials after first login")
+    if (admin) {
+      // Update existing admin
+      admin.username = adminData.username
+      admin.email = adminData.email
+      if (adminData.password) {
+        admin.password = await bcrypt.hash(adminData.password, 12)
+      }
+      admin.githubUsername = adminData.githubUsername
+      await admin.save()
+      console.log("Admin updated successfully!")
+    } else {
+      // Create new admin
+      admin = new Admin(adminData)
+      await admin.save()
+      console.log("Admin created successfully!")
+    }
+
+    console.log("Username:", adminData.username)
+    console.log("Email:", adminData.email)
+    console.log("GitHub Username:", adminData.githubUsername)
+    console.log("Password:", adminData.password.replace(/./g, "*"))
 
     process.exit(0)
   } catch (error) {
-    console.error("Error creating admin:", error)
+    console.error("Error creating/updating admin:", error)
     process.exit(1)
   }
 }

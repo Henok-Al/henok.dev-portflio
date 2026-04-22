@@ -1,6 +1,6 @@
 import React from "react"
 import { Link, useLocation } from "react-router-dom"
-import kLogo from "../assets/userAsset/k.png"
+import hLogo from "../assets/userAsset/hLogo.png"
 import { BsFillMoonFill, BsSunFill } from "react-icons/bs"
 import { FaDownload } from "react-icons/fa"
 import { useAbout } from "../contexts/AboutContext"
@@ -26,9 +26,9 @@ const Navbar = ({ isDark, setIsDark }) => {
     >
       <div className="relative w-full">
         <Link to="/">
-          <img src={kLogo} alt="K" className="w-24" />
-          <span className="absolute left-16 top-7 w-full text-[28px] transition-colors duration-300 dark:text-white">
-            Henok Alemu
+          <img src={hLogo} alt="h" className="w-24" />
+          <span className="absolute left-20 top-7 w-full text-[28px] transition-colors duration-300 dark:text-white">
+                enok Alemu
           </span>
         </Link>
       </div>

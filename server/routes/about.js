@@ -7,12 +7,26 @@ const router = express.Router()
 // Get about info (public)
 router.get("/", async (req, res) => {
   try {
-    const about = await About.findOne({ isActive: true })
+    let about = await About.findOne({ isActive: true })
+
+    // Create default about info if none exists
     if (!about) {
-      return res
-        .status(404)
-        .json({ success: false, message: "About info not found" })
+      about = new About({
+        name: "Henok Alemu",
+        title: "Full Stack Developer",
+        description: "Passionate developer with expertise in modern web technologies",
+        bio: "I am a dedicated full-stack developer with a passion for creating innovative web solutions.",
+        socialLinks: {
+          github: "",
+          linkedin: "",
+          twitter: "",
+          email: "",
+        },
+        isActive: true,
+      })
+      await about.save()
     }
+
     res.json({ success: true, about })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
