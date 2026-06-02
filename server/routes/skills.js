@@ -1,4 +1,5 @@
 import express from "express"
+import mongoose from "mongoose"
 import Skill from "../models/skill.js"
 import auth from "../middleware/auth.js"
 
@@ -78,9 +79,14 @@ router.post("/", auth, async (req, res) => {
 // Update skill
 router.put("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid skill ID" })
+    }
+
     const updateData = { ...req.body }
 
-    // Transform icon key to full URL if icon is provided
     if (updateData.icon && !updateData.icon.startsWith("http")) {
       updateData.icon =
         "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/" +
@@ -104,6 +110,11 @@ router.put("/:id", auth, async (req, res) => {
 // Delete skill
 router.delete("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid skill ID" })
+    }
     const skill = await Skill.findByIdAndDelete(req.params.id)
     if (!skill) {
       return res

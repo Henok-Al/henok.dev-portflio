@@ -10,7 +10,7 @@ RUN npm run build
 FROM node:18-alpine AS server-builder
 WORKDIR /app
 COPY package*.json package-lock.json ./
-RUN npm ci --only=production --legacy-peer-deps
+RUN npm ci --omit=dev --legacy-peer-deps
 COPY server/ ./server/
 COPY scripts/ ./scripts/
 COPY --from=client-builder /app/client/dist ./dist

@@ -1,4 +1,5 @@
 import express from "express"
+import mongoose from "mongoose"
 import Achievement from "../models/achievement.js"
 import auth from "../middleware/auth.js"
 
@@ -34,21 +35,6 @@ router.get("/category/:category", async (req, res) => {
   }
 })
 
-// Get single achievement (public)
-router.get("/:id", async (req, res) => {
-  try {
-    const achievement = await Achievement.findById(req.params.id)
-    if (!achievement || !achievement.isVisible) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Achievement not found" })
-    }
-    res.json(achievement)
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
-  }
-})
-
 // Admin routes (protected)
 
 // Get all achievements for admin
@@ -56,6 +42,44 @@ router.get("/admin/all", auth, async (req, res) => {
   try {
     const achievements = await Achievement.find().sort({ createdAt: -1 })
     res.json({ success: true, achievements })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+})
+
+// Update achievement order
+router.patch("/reorder", auth, async (req, res) => {
+  try {
+    const { achievements } = req.body
+
+    for (let i = 0; i < achievements.length; i++) {
+      await Achievement.findByIdAndUpdate(achievements[i]._id, { order: i })
+    }
+
+    res.json({
+      success: true,
+      message: "Achievement order updated successfully",
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+})
+
+// Get single achievement (public) - MUST be after static routes
+router.get("/:id", async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid achievement ID" })
+    }
+    const achievement = await Achievement.findById(req.params.id)
+    if (!achievement || !achievement.isVisible) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Achievement not found" })
+    }
+    res.json(achievement)
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }
@@ -75,6 +99,11 @@ router.post("/", auth, async (req, res) => {
 // Update achievement
 router.put("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid achievement ID" })
+    }
     const achievement = await Achievement.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -94,6 +123,11 @@ router.put("/:id", auth, async (req, res) => {
 // Delete achievement
 router.delete("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid achievement ID" })
+    }
     const achievement = await Achievement.findByIdAndDelete(req.params.id)
     if (!achievement) {
       return res
@@ -101,24 +135,6 @@ router.delete("/:id", auth, async (req, res) => {
         .json({ success: false, message: "Achievement not found" })
     }
     res.json({ success: true, message: "Achievement deleted successfully" })
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
-  }
-})
-
-// Update achievement order
-router.patch("/reorder", auth, async (req, res) => {
-  try {
-    const { achievements } = req.body
-
-    for (let i = 0; i < achievements.length; i++) {
-      await Achievement.findByIdAndUpdate(achievements[i]._id, { order: i })
-    }
-
-    res.json({
-      success: true,
-      message: "Achievement order updated successfully",
-    })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }

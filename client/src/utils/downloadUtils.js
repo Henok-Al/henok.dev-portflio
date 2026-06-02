@@ -66,7 +66,8 @@ export const downloadResume = async (resumeUrl, name = "Resume") => {
   // For cloudinary PDFs, try using the proxy route first
   if (resumeUrl?.includes("cloudinary.com") && resumeUrl?.includes(".pdf")) {
     try {
-      const response = await fetch("/api/upload/resume/download")
+      const API_BASE_URL = import.meta.env.VITE_API_URL || "/api"
+      const response = await fetch(`${API_BASE_URL}/upload/resume/download`)
       if (response.ok) {
         const blob = await response.blob()
         const blobUrl = window.URL.createObjectURL(blob)

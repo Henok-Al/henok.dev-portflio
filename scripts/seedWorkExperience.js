@@ -10,7 +10,8 @@ const workExperiences = [
     company: "Solar Project",
     location: "Ethiopia",
     employmentType: "full-time",
-    description: "As a full-stack developer, I developed a solar project using React.js for the frontend and Node.js with RESTful APIs for the backend, ensuring efficient solar energy tracking and monitoring.",
+    description:
+      "As a full-stack developer, I developed a solar project using React.js for the frontend and Node.js with RESTful APIs for the backend, ensuring efficient solar energy tracking and monitoring.",
     startDate: new Date("2023-08-01"),
     endDate: null,
     order: 1,
@@ -21,7 +22,8 @@ const workExperiences = [
     company: "HabeshaNet",
     location: "Ethiopia",
     employmentType: "full-time",
-    description: "As a full-stack developer, I focused on building REST APIs for backend while also contributing to the frontend for HabeshaNet, a social job boarding platform.",
+    description:
+      "As a full-stack developer, I focused on building REST APIs for backend while also contributing to the frontend for HabeshaNet, a social job boarding platform.",
     startDate: new Date("2023-08-01"),
     endDate: null,
     order: 2,
@@ -32,7 +34,8 @@ const workExperiences = [
     company: "St. Mary University",
     location: "Ethiopia",
     employmentType: "contract",
-    description: "Final Year Project - Developed a full-stack application for the university.",
+    description:
+      "Final Year Project - Developed a full-stack application for the university.",
     startDate: new Date("2023-03-01"),
     endDate: new Date("2023-07-01"),
     order: 3,
@@ -43,7 +46,8 @@ const workExperiences = [
     company: "Atlas Computer Technology",
     location: "Ethiopia",
     employmentType: "part-time",
-    description: "Web Design and Prototyping: Collaborated on website project (landing and blog pages) with Figma.",
+    description:
+      "Web Design and Prototyping: Collaborated on website project (landing and blog pages) with Figma.",
     startDate: new Date("2022-07-01"),
     endDate: new Date("2022-09-01"),
     order: 4,
@@ -63,7 +67,9 @@ const seedWorkExperience = async () => {
 
     // Insert new work experiences
     await WorkExperience.insertMany(workExperiences)
-    console.log(`Successfully seeded ${workExperiences.length} work experiences`)
+    console.log(
+      `Successfully seeded ${workExperiences.length} work experiences`,
+    )
 
     process.exit(0)
   } catch (error) {

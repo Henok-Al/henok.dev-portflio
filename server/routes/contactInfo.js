@@ -4,6 +4,26 @@ import auth from "../middleware/auth.js"
 
 const router = express.Router()
 
+const CONTACT_FIELDS = [
+  "phone",
+  "email",
+  "address",
+  "city",
+  "country",
+  "socialLinks",
+  "isActive",
+]
+
+const pickAllowed = (body) => {
+  const picked = {}
+  for (const key of CONTACT_FIELDS) {
+    if (body[key] !== undefined) {
+      picked[key] = body[key]
+    }
+  }
+  return picked
+}
+
 // Get contact info (public)
 router.get("/", async (req, res) => {
   try {
@@ -25,9 +45,9 @@ router.put("/", auth, async (req, res) => {
     let contactInfo = await ContactInfo.findOne({ isActive: true })
 
     if (!contactInfo) {
-      contactInfo = new ContactInfo(req.body)
+      contactInfo = new ContactInfo(pickAllowed(req.body))
     } else {
-      Object.assign(contactInfo, req.body)
+      Object.assign(contactInfo, pickAllowed(req.body))
     }
 
     await contactInfo.save()

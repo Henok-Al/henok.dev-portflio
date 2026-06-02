@@ -94,7 +94,7 @@ const AllProjects = () => {
             projects.map((project, index) => (
               <Card
                 key={project._id}
-                background={project.imageUrl || "/default-project.png"}
+                background={project.imageUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239CA3AF'%3EProject%3C/text%3E%3C/svg%3E"}
                 tech={project.technologies.map((tech) => ({
                   src: tech.icon,
                   alt: tech.name,

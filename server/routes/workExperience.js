@@ -1,4 +1,5 @@
 import express from "express"
+import mongoose from "mongoose"
 import WorkExperience from "../models/workExperience.js"
 import auth from "../middleware/auth.js"
 
@@ -17,21 +18,6 @@ router.get("/", async (req, res) => {
   }
 })
 
-// Get single work experience (public)
-router.get("/:id", async (req, res) => {
-  try {
-    const experience = await WorkExperience.findById(req.params.id)
-    if (!experience || !experience.isVisible) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Work experience not found" })
-    }
-    res.json({ success: true, experience })
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
-  }
-})
-
 // Admin routes
 
 // Get all work experiences for admin
@@ -39,6 +25,26 @@ router.get("/admin/all", auth, async (req, res) => {
   try {
     const experiences = await WorkExperience.find().sort({ startDate: -1 })
     res.json({ success: true, experiences })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+})
+
+// Get single work experience (public) - MUST be after static routes
+router.get("/:id", async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid work experience ID" })
+    }
+    const experience = await WorkExperience.findById(req.params.id)
+    if (!experience || !experience.isVisible) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Work experience not found" })
+    }
+    res.json({ success: true, experience })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }
@@ -58,6 +64,11 @@ router.post("/", auth, async (req, res) => {
 // Update work experience
 router.put("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid work experience ID" })
+    }
     const experience = await WorkExperience.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -77,6 +88,11 @@ router.put("/:id", auth, async (req, res) => {
 // Delete work experience
 router.delete("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid work experience ID" })
+    }
     const experience = await WorkExperience.findByIdAndDelete(req.params.id)
     if (!experience) {
       return res

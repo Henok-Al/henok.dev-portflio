@@ -4,16 +4,20 @@ import { BsInstagram } from "react-icons/bs"
 import { FaTwitter } from "react-icons/fa"
 import { AiFillLinkedin } from "react-icons/ai"
 import { FcDocument } from "react-icons/fc"
-
-const handles = [
-  "https://github.com/krishna4040",
-  "https://www.linkedin.com/in/krishna-jain-842539205/",
-  "https://twitter.com/krishna5048",
-  "https://www.instagram.com/_its__krish_/",
-  "https://portfolio-mailing.onrender.com/api/download",
-]
+import { useAbout } from "../contexts/AboutContext"
 
 const Footer = () => {
+  const { aboutInfo } = useAbout()
+
+  const socialLinks = aboutInfo?.socialLinks || {}
+  const handles = [
+    socialLinks.github || "https://github.com/Henok-Al",
+    socialLinks.linkedin || "#",
+    socialLinks.twitter || "#",
+    socialLinks.instagram || "#",
+    aboutInfo?.resumeUrl || "#",
+  ]
+
   return (
     <footer
       className="relative w-full overflow-hidden bg-[#343d68] px-10 py-20 transition-colors duration-300 lg:p-20 dark:bg-gray-900"

@@ -143,7 +143,7 @@ const Stack = ({ loadingHook }) => {
                 alt={skill.name}
                 className="w-20 transition-all duration-500 hover:scale-125 lg:w-[85px]"
                 onError={(e) => {
-                  e.target.src = "/assets/stack/default.png"
+                  e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23374151'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%239CA3AF'%3ESkill%3C/text%3E%3C/svg%3E"
                 }}
               />
               <div className="absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-600">

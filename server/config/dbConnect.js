@@ -5,6 +5,7 @@ export const dbConnect = async () => {
     await mongoose.connect(process.env.DB)
     console.log("db connected")
   } catch (error) {
-    console.log("could not connect db", error)
+    console.error("could not connect db", error)
+    process.exit(1)
   }
 }

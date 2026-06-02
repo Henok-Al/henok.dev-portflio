@@ -5,8 +5,18 @@ import auth from "../middleware/auth.js"
 
 const router = express.Router()
 
-// Register admin (only for initial setup)
+// Register admin (only in development or if no admin exists)
 router.post("/register", async (req, res) => {
+  if (process.env.NODE_ENV === "production") {
+    const Admin = (await import("../models/admin.js")).default
+    const adminCount = await Admin.countDocuments()
+    if (adminCount > 0) {
+      return res.status(403).json({
+        success: false,
+        message: "Registration disabled in production",
+      })
+    }
+  }
   try {
     const { username, email, password, githubUsername } = req.body
 

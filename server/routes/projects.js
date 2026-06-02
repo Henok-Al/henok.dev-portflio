@@ -1,11 +1,9 @@
 import express from "express"
+import mongoose from "mongoose"
 import Project from "../models/project.js"
 import auth from "../middleware/auth.js"
 import { fetchGithubRepos, fetchGithubRepoDetails } from "../utils/github.js"
-import {
-  getProjectImage,
-  getBackgroundImage,
-} from "../utils/unsplashService.js"
+import { getProjectImage } from "../utils/unsplashService.js"
 
 const router = express.Router()
 
@@ -34,21 +32,6 @@ router.get("/featured", async (req, res) => {
   }
 })
 
-// Get single project (public)
-router.get("/:id", async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id)
-    if (!project || !project.isVisible) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Project not found" })
-    }
-    res.json(project)
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
-  }
-})
-
 // Admin routes (protected)
 
 // Get all projects for admin
@@ -61,12 +44,89 @@ router.get("/admin/all", auth, async (req, res) => {
   }
 })
 
+// Fetch GitHub repositories
+router.get("/github/repos", auth, async (req, res) => {
+  try {
+    if (!req.admin.githubUsername) {
+      return res
+        .status(400)
+        .json({ success: false, message: "GitHub username not set" })
+    }
+
+    const repos = await fetchGithubRepos(req.admin.githubUsername)
+
+    const existingProjects = await Project.find({}, "githubUrl title")
+    const existingGithubUrls = existingProjects.map(
+      (project) => project.githubUrl,
+    )
+
+    const reposWithImportStatus = repos.map((repo) => ({
+      ...repo,
+      isImported: existingGithubUrls.includes(repo.html_url),
+      existingProject: existingProjects.find(
+        (project) => project.githubUrl === repo.html_url,
+      ),
+    }))
+
+    res.json({ success: true, repos: reposWithImportStatus })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+})
+
+// Update featured projects
+router.post("/featured/update", auth, async (req, res) => {
+  try {
+    const { projectIds } = req.body
+
+    await Project.updateMany({}, { isFeatured: false })
+
+    if (projectIds && projectIds.length > 0) {
+      await Project.updateMany(
+        { _id: { $in: projectIds } },
+        { isFeatured: true },
+      )
+
+      for (let i = 0; i < projectIds.length; i++) {
+        await Project.findByIdAndUpdate(projectIds[i], { order: i })
+      }
+    }
+
+    res.json({
+      success: true,
+      message: "Featured projects updated successfully",
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+})
+
+// Get single project (public) - MUST be after static routes
+router.get("/:id", async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid project ID" })
+    }
+    const project = await Project.findById(req.params.id)
+    if (!project || !project.isVisible) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found" })
+    }
+    res.json(project)
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+})
+
 // Create project
 router.post("/", auth, async (req, res) => {
   try {
     const projectData = {
       ...req.body,
-      technologies: req.body.technologies.map(({ name, icon }) => ({
+      technologies: (req.body.technologies || []).map(({ name, icon }) => ({
         name,
         icon:
           icon && !icon.startsWith("http")
@@ -76,7 +136,6 @@ router.post("/", auth, async (req, res) => {
       })),
     }
 
-    // If no image provided, get one from Unsplash
     if (!projectData.imageUrl && projectData.title) {
       const imageData = await getProjectImage(
         projectData.title,
@@ -87,7 +146,6 @@ router.post("/", auth, async (req, res) => {
 
     const project = new Project(projectData)
 
-    // Fetch GitHub data if GitHub URL is provided
     if (project.githubUrl) {
       const repoName = project.githubUrl.split("/").pop()
       const githubData = await fetchGithubRepoDetails(
@@ -107,9 +165,14 @@ router.post("/", auth, async (req, res) => {
 // Update project
 router.put("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid project ID" })
+    }
+
     const updateData = { ...req.body }
 
-    // Transform technologies icon keys to full URLs if technologies are provided
     if (updateData.technologies && Array.isArray(updateData.technologies)) {
       updateData.technologies = updateData.technologies.map(
         ({ name, icon }) => ({
@@ -132,7 +195,6 @@ router.put("/:id", auth, async (req, res) => {
         .json({ success: false, message: "Project not found" })
     }
 
-    // Update GitHub data if GitHub URL is provided
     if (project.githubUrl) {
       const repoName = project.githubUrl.split("/").pop()
       const githubData = await fetchGithubRepoDetails(
@@ -152,6 +214,11 @@ router.put("/:id", auth, async (req, res) => {
 // Delete project
 router.delete("/:id", auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid project ID" })
+    }
     const project = await Project.findByIdAndDelete(req.params.id)
     if (!project) {
       return res
@@ -159,68 +226,6 @@ router.delete("/:id", auth, async (req, res) => {
         .json({ success: false, message: "Project not found" })
     }
     res.json({ success: true, message: "Project deleted successfully" })
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
-  }
-})
-
-// Fetch GitHub repositories
-router.get("/github/repos", auth, async (req, res) => {
-  try {
-    if (!req.admin.githubUsername) {
-      return res
-        .status(400)
-        .json({ success: false, message: "GitHub username not set" })
-    }
-
-    const repos = await fetchGithubRepos(req.admin.githubUsername)
-
-    // Get existing projects to mark which repos are already imported
-    const existingProjects = await Project.find({}, "githubUrl title")
-    const existingGithubUrls = existingProjects.map(
-      (project) => project.githubUrl,
-    )
-
-    // Add isImported flag to each repo
-    const reposWithImportStatus = repos.map((repo) => ({
-      ...repo,
-      isImported: existingGithubUrls.includes(repo.html_url),
-      existingProject: existingProjects.find(
-        (project) => project.githubUrl === repo.html_url,
-      ),
-    }))
-
-    res.json({ success: true, repos: reposWithImportStatus })
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message })
-  }
-})
-
-// Update featured projects
-router.post("/featured/update", auth, async (req, res) => {
-  try {
-    const { projectIds } = req.body
-
-    // Remove featured status from all projects
-    await Project.updateMany({}, { isFeatured: false })
-
-    // Set featured status for selected projects
-    if (projectIds && projectIds.length > 0) {
-      await Project.updateMany(
-        { _id: { $in: projectIds } },
-        { isFeatured: true },
-      )
-
-      // Update order for featured projects
-      for (let i = 0; i < projectIds.length; i++) {
-        await Project.findByIdAndUpdate(projectIds[i], { order: i })
-      }
-    }
-
-    res.json({
-      success: true,
-      message: "Featured projects updated successfully",
-    })
   } catch (error) {
     res.status(500).json({ success: false, message: error.message })
   }

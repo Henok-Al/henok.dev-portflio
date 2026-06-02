@@ -4,17 +4,38 @@ import auth from "../middleware/auth.js"
 
 const router = express.Router()
 
+const ABOUT_FIELDS = [
+  "name",
+  "title",
+  "description",
+  "bio",
+  "socialLinks",
+  "profileImage",
+  "resumeUrl",
+  "isActive",
+]
+
+const pickAllowed = (body) => {
+  const picked = {}
+  for (const key of ABOUT_FIELDS) {
+    if (body[key] !== undefined) {
+      picked[key] = body[key]
+    }
+  }
+  return picked
+}
+
 // Get about info (public)
 router.get("/", async (req, res) => {
   try {
     let about = await About.findOne({ isActive: true })
 
-    // Create default about info if none exists
     if (!about) {
       about = new About({
         name: "Henok Alemu",
         title: "Full Stack Developer",
-        description: "Passionate developer with expertise in modern web technologies",
+        description:
+          "Passionate developer with expertise in modern web technologies",
         bio: "I am a dedicated full-stack developer with a passion for creating innovative web solutions.",
         socialLinks: {
           github: "",
@@ -39,9 +60,9 @@ router.put("/", auth, async (req, res) => {
     let about = await About.findOne({ isActive: true })
 
     if (!about) {
-      about = new About(req.body)
+      about = new About(pickAllowed(req.body))
     } else {
-      Object.assign(about, req.body)
+      Object.assign(about, pickAllowed(req.body))
     }
 
     await about.save()
