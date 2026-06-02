@@ -96,18 +96,20 @@ export const saveProfileImage = async (buffer, originalName) => {
   }
 }
 
-// Save resume
+// Save resume - store as raw with public access
 export const saveResume = async (buffer, originalName) => {
   try {
     const publicId = `portfolio/resumes/resume-${uuidv4()}`
 
     const result = await uploadToCloudinary(buffer, {
       public_id: publicId,
-      resource_type: "raw", // For non-image files like PDFs
-      format: "pdf",
+      resource_type: "raw",
+      type: "upload",
+      access_mode: "public",
     })
 
-    return result.secure_url
+    // Return URL with download flag
+    return result.secure_url + "?fl_attachment=true"
   } catch (error) {
     throw new Error("Error saving resume: " + error.message)
   }

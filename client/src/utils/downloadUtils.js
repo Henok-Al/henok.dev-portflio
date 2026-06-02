@@ -10,6 +10,28 @@ export const downloadFile = async (url, filename) => {
       throw new Error("No file URL provided")
     }
 
+    // For Cloudinary PDFs, use fetch to get the blob
+    if (url.includes("cloudinary.com") && url.includes(".pdf")) {
+      try {
+        const response = await fetch(url)
+        if (!response.ok) throw new Error("Failed to fetch")
+
+        const blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.download = filename || "resume.pdf"
+        link.click()
+
+        window.URL.revokeObjectURL(blobUrl)
+        return { success: true, message: "Download started" }
+      } catch (fetchError) {
+        // Fallback to direct download
+        console.error("Fetch failed, using direct download:", fetchError)
+      }
+    }
+
     // Create a temporary anchor element
     const link = document.createElement("a")
     link.href = url
@@ -38,7 +60,29 @@ export const downloadFile = async (url, filename) => {
  * @param {string} name - The person's name for filename
  */
 export const downloadResume = async (resumeUrl, name = "Resume") => {
+  // Use API route as proxy for Cloudinary
   const filename = `${name.replace(/\s+/g, "_")}_Resume.pdf`
+
+  // For cloudinary PDFs, try using the proxy route first
+  if (resumeUrl?.includes("cloudinary.com") && resumeUrl?.includes(".pdf")) {
+    try {
+      const response = await fetch("/api/upload/resume/download")
+      if (response.ok) {
+        const blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.download = filename
+        link.click()
+        window.URL.revokeObjectURL(blobUrl)
+        return { success: true, message: "Download started" }
+      }
+    } catch (e) {
+      console.error("Proxy failed:", e)
+    }
+  }
+
+  // Fallback
   return downloadFile(resumeUrl, filename)
 }
 
@@ -52,6 +96,14 @@ export const viewResume = (resumeUrl) => {
   }
 
   try {
+    // For Cloudinary PDF URLs, use a fetch approach to get the blob
+    // then open in new tab with the blob URL
+    if (resumeUrl.includes("cloudinary.com") && resumeUrl.endsWith(".pdf")) {
+      // Create a link that opens directly
+      window.open(resumeUrl, "_blank")
+      return { success: true, message: "Resume opened in new tab" }
+    }
+
     window.open(resumeUrl, "_blank", "noopener,noreferrer")
     return { success: true, message: "Resume opened in new tab" }
   } catch (error) {

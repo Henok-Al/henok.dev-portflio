@@ -1,5 +1,6 @@
 import express from "express"
 import dotenv from "dotenv"
+import cors from "cors"
 import path from "path"
 import { fileURLToPath } from "url"
 import { dbConnect } from "./config/dbConnect.js"
@@ -33,6 +34,13 @@ dbConnect()
 configureCloudinary()
 
 app.use(express.json())
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+  }),
+)
 
 // API Routes
 app.use("/api/auth", authRoutes)
